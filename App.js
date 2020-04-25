@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
 import {
   SafeAreaView,
@@ -13,8 +5,11 @@ import {
   ScrollView,
   View,
   Text,
+  TouchableOpacity,
   StatusBar,
 } from 'react-native';
+import 'react-native-gesture-handler';
+import {NavigationContainer} from '@react-navigation/native';
 
 import {
   Header,
@@ -24,7 +19,62 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
+// Which is better, TopNav or Bottom?
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+// import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
+function AppTabBar({state, descriptors, navigation}) {
+  return (
+    <View style={styles.tabBar}>
+      {state.routes.map((route, index) => {
+        const {options} = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
+
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        return (
+          <TouchableOpacity
+            key={index}
+            accessibilityRole="button"
+            accessibilityStates={isFocused ? ['selected'] : []}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={styles.tabSelection}>
+            <Text style={{color: isFocused ? '#673ab7' : '#222'}}>{label}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+
+function GiveScreen() {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -70,9 +120,59 @@ const App: () => React$Node = () => {
       </SafeAreaView>
     </>
   );
+}
+
+function AskScreen() {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView>
+        <View style={styles.basic}>
+          <Text>Ask!</Text>
+        </View>
+      </SafeAreaView>
+    </>
+  );
+}
+
+function NotificationScreen() {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView>
+        <View style={styles.basic}>
+          <Text>Notifications</Text>
+        </View>
+      </SafeAreaView>
+    </>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+// const Tab = createMaterialTopTabNavigator();
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        tabBar={props => <AppTabBar {...props} />}
+        tabBarOptions={{
+          activeTintColor: '#e91e63',
+        }}>
+        <Tab.Screen name="Give" component={GiveScreen} />
+        <Tab.Screen name="Ask" component={AskScreen} />
+        <Tab.Screen name="Notifications" component={NotificationScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 };
 
 const styles = StyleSheet.create({
+  basic: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
   scrollView: {
     backgroundColor: Colors.lighter,
   },
@@ -108,6 +208,16 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  tabBar: {
+    flexDirection: 'row',
+    height: 52,
+  },
+  tabSelection: {
+    alignItems: 'center',
+    alignContent: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 
