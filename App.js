@@ -154,15 +154,17 @@ const Tab = createBottomTabNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        tabBar={props => <AppTabBar {...props} />}
-        tabBarOptions={{
-          activeTintColor: '#e91e63',
-        }}>
-        <Tab.Screen name="Give" component={GiveScreen} />
-        <Tab.Screen name="Ask" component={AskScreen} />
-        <Tab.Screen name="Notifications" component={NotificationScreen} />
-      </Tab.Navigator>
+      <SafeAreaView style={styles.flex}>
+        <Tab.Navigator
+          tabBar={props => <AppTabBar {...props} />}
+          tabBarOptions={{
+            activeTintColor: '#e91e63',
+          }}>
+          <Tab.Screen name="Give" component={GiveScreen} />
+          <Tab.Screen name="Ask" component={AskScreen} />
+          <Tab.Screen name="Notifications" component={NotificationScreen} />
+        </Tab.Navigator>
+      </SafeAreaView>
     </NavigationContainer>
   );
 };
@@ -170,7 +172,6 @@ const App = () => {
 const styles = StyleSheet.create({
   basic: {
     alignItems: 'center',
-    flex: 1,
     justifyContent: 'center',
   },
   scrollView: {
@@ -200,6 +201,9 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  flex: {
+    flex: 1,
   },
   footer: {
     color: Colors.dark,
