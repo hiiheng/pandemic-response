@@ -2,12 +2,16 @@
   "name": "PandemicResponse",
   "version": "0.0.1",
   "private": true,
+  "config": {
+    "host_ip": "localhost",
+    "prod_host_ip": "167.71.82.22"
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "yarn start:dev",
-    "start:dev": "NODE_ENV='development' HOST_IP='INSERT_IP_ADDRESS' react-native start --reset-cache",
-    "start:prod": "NODE_ENV='production' react-native start --reset-cache",
+    "start:dev": "NODE_ENV='development' HOST_IP=$npm_package_config_host_ip react-native start --reset-cache",
+    "start:prod": "NODE_ENV='prod' HOST_IP=$npm_package_config_prod_host_ip react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint ."
   },

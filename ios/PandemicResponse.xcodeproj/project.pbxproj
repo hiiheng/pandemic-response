@@ -194,7 +194,6 @@
 				1A58F4EA8F40C30C2BEFC21E /* Pods-PandemicResponseTests.debug.xcconfig */,
 				14B3878F92AB6E7BA84F0C52 /* Pods-PandemicResponseTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -308,6 +307,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -628,6 +628,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PandemicResponse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -647,6 +648,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PandemicResponse/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
