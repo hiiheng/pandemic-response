@@ -17,10 +17,12 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.5",
+    "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/bottom-tabs": "^5.2.7",
     "@react-navigation/material-top-tabs": "^5.1.9",
     "@react-navigation/native": "^5.1.6",
+    "@react-navigation/stack": "^5.2.14",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-upload-client": "^13.0.0",
@@ -37,7 +39,7 @@
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",
-    "@react-native-community/eslint-config": "^0.0.5",
+    "@react-native-community/eslint-config": "^1.1.0",
     "babel-jest": "^24.9.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "eslint": "^6.5.1",

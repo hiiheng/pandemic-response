@@ -7,7 +7,7 @@ const NotificationScreen = () => {
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <View style={styles.basic}>
-          <Text>Notifications</Text>
+          <Text>Under Construction</Text>
         </View>
       </SafeAreaView>
     </>

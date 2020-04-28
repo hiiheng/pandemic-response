@@ -1,4 +1,4 @@
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useContext, useLayoutEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,11 +7,17 @@ import {
   Text,
   View,
 } from 'react-native';
+
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+
 import {useLazyQuery} from '@apollo/react-hooks';
-import QUERIES from '../../api/queries';
+import QUERIES from '../../../api/queries';
+
+import {Context as GlobalContext} from '../../../contexts/global';
 
 const AskScreen = () => {
+  const [{uuid}] = useContext(GlobalContext);
+
   const [asksState, setAsksState] = useState([]);
 
   const onCompleted = data => {
@@ -31,7 +37,6 @@ const AskScreen = () => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeAreaView}>
-        <Text>Asks</Text>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={styles.scrollView}>

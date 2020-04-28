@@ -1,4 +1,4 @@
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useContext, useLayoutEffect, useState} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -11,9 +11,12 @@ import {
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import {useLazyQuery} from '@apollo/react-hooks';
-import QUERIES from '../../api/queries';
+import QUERIES from '../../../api/queries';
+
+import {Context as GlobalContext} from '../../../contexts/global';
 
 const GiveScreen = () => {
+  const [{uuid}] = useContext(GlobalContext);
   const [givesState, setGivesState] = useState([]);
 
   const onCompleted = data => {
@@ -33,7 +36,6 @@ const GiveScreen = () => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeAreaView}>
-        <Text>Gives</Text>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={styles.scrollView}>
