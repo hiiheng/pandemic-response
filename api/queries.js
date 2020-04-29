@@ -4,8 +4,10 @@ const QUERIES = {
   ALL_ASKS: gql`
     query {
       asks {
-        id
         comments
+        createdAt
+        id
+        itemCategory
         quantity
         userProfile {
           name
@@ -18,8 +20,10 @@ const QUERIES = {
   ALL_GIVES: gql`
     query {
       gives {
-        id
         comments
+        createdAt
+        id
+        itemCategory
         quantity
         userProfile {
           name

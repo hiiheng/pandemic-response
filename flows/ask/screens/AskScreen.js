@@ -1,12 +1,16 @@
 import React, {useContext, useLayoutEffect, useState} from 'react';
+import {SafeAreaView, StatusBar, StyleSheet, Text} from 'react-native';
+
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+  Button,
+  Divider,
+  Layout,
+  List,
+  ListItem,
+  Spinner,
+} from '@ui-kitten/components';
+import {DateFnsService} from '@ui-kitten/date-fns';
+import {parseISO} from 'date-fns';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -15,8 +19,10 @@ import QUERIES from '../../../api/queries';
 
 import {Context as GlobalContext} from '../../../contexts/global';
 
+const dateService = new DateFnsService();
+
 const AskScreen = () => {
-  const [{uuid}] = useContext(GlobalContext);
+  const [] = useContext(GlobalContext);
 
   const [asksState, setAsksState] = useState([]);
 
@@ -25,7 +31,7 @@ const AskScreen = () => {
     setAsksState(asks);
   };
 
-  const [loadAllAsks, {error}] = useLazyQuery(QUERIES.ALL_ASKS, {
+  const [loadAllAsks, {error, loading}] = useLazyQuery(QUERIES.ALL_ASKS, {
     onCompleted,
   });
 
@@ -33,56 +39,86 @@ const AskScreen = () => {
     loadAllAsks();
   }, [loadAllAsks]);
 
+  const renderAccessory = props => {
+    let statusColor = '';
+    switch (props.item.status) {
+      case 'Completed':
+        statusColor = 'success';
+        break;
+      case 'Returned':
+        statusColor = 'warning';
+        break;
+      case 'Verified':
+        statusColor = 'success';
+        break;
+      case 'Reviewing':
+        statusColor = 'primary';
+        break;
+      default:
+        statusColor = 'basic';
+    }
+    return (
+      <Button
+        appearance={'outline'}
+        size="tiny"
+        style={styles.minWidth80}
+        status={statusColor}>
+        {props.item.status}
+      </Button>
+    );
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeAreaView}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={styles.scrollView}>
-          {!error &&
-            asksState.map((ask, askIndex) => {
-              const entry = Object.entries(ask);
-
+        {loading && (
+          <Layout style={styles.centerSpinner}>
+            <Spinner size="medium" />
+          </Layout>
+        )}
+        {!error && (
+          <List
+            style={styles.width100}
+            data={asksState}
+            ItemSeparatorComponent={Divider}
+            renderItem={(ask, askIndex) => {
               return (
-                <React.Fragment key={`ask-${askIndex}`}>
-                  <View>
-                    {entry.map((keyValue, index) => {
-                      return (
-                        <Text key={index}>
-                          {keyValue[0]}:
-                          {typeof keyValue[1] === 'object'
-                            ? JSON.stringify(keyValue[1])
-                            : keyValue[1]}
-                        </Text>
-                      );
-                    })}
-                  </View>
-                  <View style={styles.divider} />
-                </React.Fragment>
+                <ListItem
+                  title={`${ask.item.userProfile.name} asks ${ask.item.itemCategory} resource`}
+                  key={`ask-${askIndex}`}
+                  description={`${dateService.format(
+                    parseISO(ask.item.createdAt),
+                    'LLLL d, yyyy h:mm a',
+                  )}`}
+                  accessory={() => renderAccessory(ask)}
+                />
               );
-            })}
-          {error && <Text>Unable to get data at this time.</Text>}
-        </ScrollView>
+            }}
+          />
+        )}
+        {error && <Text>Unable to get data at this time.</Text>}
       </SafeAreaView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  divider: {
-    borderColor: '#aaa',
-    borderWidth: 0.5,
-    marginBottom: 5,
-    width: '100%',
+  centerSpinner: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100%',
+    minWidth: '100%',
+  },
+  minWidth80: {
+    minWidth: 80,
   },
   safeAreaView: {
     alignItems: 'center',
     backgroundColor: Colors.lighter,
   },
-  scrollView: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  width100: {
+    width: '100%',
   },
 });
 

@@ -1,11 +1,14 @@
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {Alert, SafeAreaView, StyleSheet, Platform} from 'react-native';
+import React, {useContext, useLayoutEffect} from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {ApolloProvider} from '@apollo/react-hooks';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
+
+import {ApplicationProvider} from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
 
 // import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
@@ -62,22 +65,24 @@ const App = () => {
   return (
     <>
       <ApolloProvider client={client}>
-        <NavigationContainer>
-          <SafeAreaView style={styles.flex}>
-            <Tab.Navigator
-              tabBar={props => <TabBar {...props} />}
-              tabBarOptions={{
-                activeTintColor: '#e91e63',
-              }}>
-              <Stack.Screen name="Give" component={GiveComponent} />
-              <Stack.Screen name="Ask" component={AskComponent} />
-              <Stack.Screen
-                name="Notifications"
-                component={NotificationComponent}
-              />
-            </Tab.Navigator>
-          </SafeAreaView>
-        </NavigationContainer>
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <NavigationContainer>
+            <SafeAreaView style={styles.flex}>
+              <Tab.Navigator
+                tabBar={props => <TabBar {...props} />}
+                tabBarOptions={{
+                  activeTintColor: '#e91e63',
+                }}>
+                <Stack.Screen name="Give" component={GiveComponent} />
+                <Stack.Screen name="Ask" component={AskComponent} />
+                <Stack.Screen
+                  name="Notifications"
+                  component={NotificationComponent}
+                />
+              </Tab.Navigator>
+            </SafeAreaView>
+          </NavigationContainer>
+        </ApplicationProvider>
       </ApolloProvider>
     </>
   );
