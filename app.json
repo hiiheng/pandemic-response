@@ -1,4 +1,5 @@
 {
   "name": "PandemicResponse",
-  "displayName": "PandemicResponse"
+  "displayName": "PandemicResponse",
+  "senderId": "INSERT_SENDER_ID"
 }

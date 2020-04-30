@@ -4,14 +4,16 @@
   "private": true,
   "config": {
     "host_ip": "localhost",
-    "prod_host_ip": "167.71.82.22"
+    "prod_host_ip": "167.71.82.22",
+    "air_api": "localhost",
+    "air_token": "INSERT_AIR_PROJECT_KEY"
   },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "yarn start:dev",
-    "start:dev": "NODE_ENV='development' HOST_IP=$npm_package_config_host_ip react-native start --reset-cache",
-    "start:prod": "NODE_ENV='prod' HOST_IP=$npm_package_config_prod_host_ip react-native start --reset-cache",
+    "start:dev": "NODE_ENV='development' AIR_TOKEN=$npm_package_config_air_token AIR_API=$npm_package_config_air_api HOST_IP=$npm_package_config_host_ip react-native start --reset-cache",
+    "start:prod": "NODE_ENV='prod' AIR_TOKEN=$npm_package_config_air_token AIR_API=$npm_package_config_air_api HOST_IP=$npm_package_config_prod_host_ip react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -20,6 +22,8 @@
     "@eva-design/eva": "^1.4.0",
     "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-firebase/analytics": "~6.2.0",
+    "@react-native-firebase/app": "~6.2.0",
     "@react-navigation/bottom-tabs": "^5.2.7",
     "@react-navigation/material-top-tabs": "^5.1.9",
     "@react-navigation/native": "^5.1.6",
@@ -36,11 +40,13 @@
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-gesture-handler": "^1.6.1",
+    "react-native-push-notification": "^3.2.1",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.7.0",
     "react-native-svg": "^12.1.0",
-    "react-native-tab-view": "^2.14.0"
+    "react-native-tab-view": "^2.14.0",
+    "uuid": "3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

@@ -1,8 +1,9 @@
-import React, {useContext, useLayoutEffect} from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
+import {Alert, SafeAreaView, StyleSheet, Platform} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {ApolloProvider} from '@apollo/react-hooks';
+import PushNotification from 'react-native-push-notification';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -12,9 +13,13 @@ import * as eva from '@eva-design/eva';
 
 // import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-import {client} from './api/client';
+import 'react-native-gesture-handler';
 
+import {senderId as senderID} from './app.json';
+import {client} from './api/client';
 import TabBar from './components/TabBar';
+import env from './env';
+import AirNotifier from './rest/airnotifier';
 
 import GiveComponent from './flows/give';
 import AskComponent from './flows/ask';
@@ -33,10 +38,22 @@ const uuidv4 = require('uuid/v4');
 const Tab = createBottomTabNavigator();
 // const Tab = createMaterialTopTabNavigator();
 
+const {postUserDeviceToken} = AirNotifier;
+
 const Stack = createStackNavigator();
 
 const App = () => {
   const [{uuid}, dispatchUserInfoState] = useContext(GlobalContext);
+
+  const [deviceToken, setDeviceToken] = useState(false);
+
+  const onRegister = ({token: registerToken}) => {
+    setDeviceToken(registerToken);
+  };
+
+  const onNotification = notification => {
+    Alert.alert(notification.title, notification.message);
+  };
 
   useLayoutEffect(() => {
     // Retrieve user uuid if exists, generate otherwise
@@ -60,7 +77,34 @@ const App = () => {
         }
       })
       .catch(error => console.log('Unable to retrieve', error));
+    // retrieve device token
+    PushNotification.configure({
+      onRegister,
+      onNotification,
+      requestPermissions: true,
+      senderID,
+    });
   }, [dispatchUserInfoState]);
+
+  useEffect(() => {
+    if (deviceToken && uuid) {
+      // upload token and uuid
+      postUserDeviceToken(
+        // eslint-disable-next-line no-undef
+        new Headers({
+          'Content-Type': 'application/json',
+          'X-AN-APP-NAME': env.services.readAirNotifier.appName,
+          'X-AN-APP-KEY': env.services.readAirNotifier.accessToken,
+        }),
+        JSON.stringify({
+          device: Platform.OS === 'android' ? 'fcm' : 'apn',
+          token: deviceToken,
+          channel: 'default',
+          user: uuid,
+        }),
+      );
+    }
+  }, [deviceToken, uuid]);
 
   return (
     <>

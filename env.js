@@ -5,12 +5,25 @@ const DEV_HOST_ADDRESS =
 
 const PROD_HOST_ADDRESS = process.env.HOST_IP || process.env.HOST_NAME;
 
+const readAirNotifier = {
+  appName: 'hackathon',
+  api: `http://${process.env.AIR_API}:${process.env.AIR_PORT || 4400}`,
+  accessToken: process.env.AIR_TOKEN,
+};
+
 export const API_ENV = {
+  hostServer: `http://${DEV_HOST_ADDRESS || PROD_HOST_ADDRESS}`,
   development: {
     gqlApi: `http://${DEV_HOST_ADDRESS}:4466`,
+    services: {
+      readAirNotifier,
+    },
   },
   production: {
-    gqlApi: `http://${PROD_HOST_ADDRESS || '167.71.82.22'}:4466`,
+    gqlApi: `http://${PROD_HOST_ADDRESS}:4466`,
+    services: {
+      readAirNotifier,
+    },
   },
 };
 

@@ -4,7 +4,9 @@
             "include": [
                 "NODE_ENV",
                 "HOST_IP",
-                "HOST_ADDRESS"
+                "HOST_ADDRESS",
+                "AIR_API",
+                "AIR_TOKEN"
             ]
         }]
     ]
