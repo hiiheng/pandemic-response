@@ -59,7 +59,7 @@ const GiveDetailScreen = props => {
             <Input
               value={giveState.userProfile.name}
               label="Giver"
-              placeholder="Who's giveing?"
+              placeholder="Who's giving?"
               disabled={true}
             />
             <Select
