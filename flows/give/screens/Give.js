@@ -11,6 +11,7 @@ import {
 } from '@ui-kitten/components';
 import {DateFnsService} from '@ui-kitten/date-fns';
 import {parseISO} from 'date-fns';
+import {useNavigation} from '@react-navigation/native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -18,30 +19,32 @@ import {useLazyQuery} from '@apollo/react-hooks';
 import QUERIES from '../../../api/queries';
 
 import {Context as GlobalContext} from '../../../contexts/global';
+import createdAtOrderBy from '../../../constants/enum/created-at';
 
 const dateService = new DateFnsService();
 
-const AskScreen = () => {
+const GiveScreen = () => {
   const [] = useContext(GlobalContext);
+  const [givesState, setGivesState] = useState([]);
 
-  const [asksState, setAsksState] = useState([]);
+  const navigation = useNavigation();
 
-  const onCompleted = data => {
-    const {asks} = data;
-    setAsksState(asks);
+  const onCompleted = ({givesConnection}) => {
+    const gives = givesConnection.edges;
+    setGivesState(gives);
   };
 
-  const [loadAllAsks, {error, loading}] = useLazyQuery(QUERIES.ALL_ASKS, {
+  const [loadAllGives, {error, loading}] = useLazyQuery(QUERIES.VariableGives, {
     onCompleted,
   });
 
   useLayoutEffect(() => {
-    loadAllAsks();
-  }, [loadAllAsks]);
+    loadAllGives({variables: {orderBy: createdAtOrderBy.Desc}});
+  }, [loadAllGives]);
 
   const renderAccessory = props => {
     let statusColor = '';
-    switch (props.item.status) {
+    switch (props.status) {
       case 'Completed':
         statusColor = 'success';
         break;
@@ -63,7 +66,7 @@ const AskScreen = () => {
         size="tiny"
         style={styles.minWidth80}
         status={statusColor}>
-        {props.item.status}
+        {props.status}
       </Button>
     );
   };
@@ -80,30 +83,43 @@ const AskScreen = () => {
         {!error && (
           <List
             style={styles.width100}
-            data={asksState}
+            data={givesState}
             ItemSeparatorComponent={Divider}
-            renderItem={(ask, askIndex) => {
+            renderItem={(edge, edgeIndex) => {
+              const give = edge.item.node;
               return (
                 <ListItem
-                  title={`${ask.item.userProfile.name} asks ${ask.item.itemCategory} resource`}
-                  key={`ask-${askIndex}`}
+                  title={`${give.userProfile.name} gives ${give.itemCategory} resource`}
+                  key={`give-${edgeIndex}`}
                   description={`${dateService.format(
-                    parseISO(ask.item.createdAt),
+                    parseISO(give.createdAt),
                     'LLLL d, yyyy h:mm a',
                   )}`}
-                  accessory={() => renderAccessory(ask)}
+                  accessory={() => renderAccessory(give)}
+                  onPress={() =>
+                    navigation.navigate('Give Detail', {id: give.id})
+                  }
                 />
               );
             }}
           />
         )}
         {error && <Text>Unable to get data at this time.</Text>}
+        <Button
+          style={styles.actionButton}
+          onPress={() => navigation.navigate('Give Form')}>
+          I want to give
+        </Button>
       </SafeAreaView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  actionButton: {
+    width: '85%',
+    marginBottom: 10,
+  },
   centerSpinner: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -116,10 +132,12 @@ const styles = StyleSheet.create({
   safeAreaView: {
     alignItems: 'center',
     backgroundColor: Colors.lighter,
+    height: '100%',
+    justifyContent: 'space-between',
   },
   width100: {
     width: '100%',
   },
 });
 
-export default AskScreen;
+export default GiveScreen;
